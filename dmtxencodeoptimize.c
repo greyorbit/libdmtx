@@ -37,41 +37,6 @@ enum SchemeState {
    SchemeStateCount
 };
 
-#if DUMPSTREAMS
-static void DumpStreams(DmtxEncodeStream *streamBest)
-{
-   enum SchemeState state;
-   char prefix[32];
-
-   fprintf(stdout, "----------------------------------------\n");
-   for(state = 0; state < SchemeStateCount; state++)
-   {
-      if(streamBest[state].status == DmtxStatusEncoding ||
-            streamBest[state].status == DmtxStatusComplete)
-         fprintf(stdout, "\"%c\" ", streamBest[state].input->b[streamBest[state].inputNext-1]);
-      else
-         fprintf(stdout, "    ");
-
-      switch(streamBest[state].status) {
-         case DmtxStatusEncoding:
-            snprintf(prefix, sizeof(prefix), "%2d (%s): ", state, " encode ");
-            break;
-         case DmtxStatusComplete:
-            snprintf(prefix, sizeof(prefix), "%2d (%s): ", state, "complete");
-            break;
-         case DmtxStatusInvalid:
-            snprintf(prefix, sizeof(prefix), "%2d (%s): ", state, "invalid ");
-            break;
-         case DmtxStatusFatal:
-            snprintf(prefix, sizeof(prefix), "%2d (%s): ", state, " fatal  ");
-            break;
-      }
-      dmtxByteListPrint(streamBest[state].output, prefix);
-   }
-}
-#endif
-
-
 /**
  *
  *
@@ -112,48 +77,6 @@ EncodeOptimizeBest(DmtxByteList *input, DmtxByteList *output, int sizeIdxRequest
 
       AdvanceAsciiCompact(streamsTemp, streamsBest, AsciiCompactOffset0, inputNext, sizeIdxRequest);
       AdvanceAsciiCompact(streamsTemp, streamsBest, AsciiCompactOffset1, inputNext, sizeIdxRequest);
-
-      AdvanceCTX(streamsTemp, streamsBest, C40Offset0, inputNext, c40ValueCount, sizeIdxRequest);
-      AdvanceCTX(streamsTemp, streamsBest, C40Offset1, inputNext, c40ValueCount, sizeIdxRequest);
-      AdvanceCTX(streamsTemp, streamsBest, C40Offset2, inputNext, c40ValueCount, sizeIdxRequest);
-
-      AdvanceCTX(streamsTemp, streamsBest, TextOffset0, inputNext, textValueCount, sizeIdxRequest);
-      AdvanceCTX(streamsTemp, streamsBest, TextOffset1, inputNext, textValueCount, sizeIdxRequest);
-      AdvanceCTX(streamsTemp, streamsBest, TextOffset2, inputNext, textValueCount, sizeIdxRequest);
-
-      AdvanceCTX(streamsTemp, streamsBest, X12Offset0, inputNext, x12ValueCount, sizeIdxRequest);
-      AdvanceCTX(streamsTemp, streamsBest, X12Offset1, inputNext, x12ValueCount, sizeIdxRequest);
-      AdvanceCTX(streamsTemp, streamsBest, X12Offset2, inputNext, x12ValueCount, sizeIdxRequest);
-
-      AdvanceEdifact(streamsTemp, streamsBest, EdifactOffset0, inputNext, sizeIdxRequest);
-      AdvanceEdifact(streamsTemp, streamsBest, EdifactOffset1, inputNext, sizeIdxRequest);
-      AdvanceEdifact(streamsTemp, streamsBest, EdifactOffset2, inputNext, sizeIdxRequest);
-      AdvanceEdifact(streamsTemp, streamsBest, EdifactOffset3, inputNext, sizeIdxRequest);
-
-      StreamAdvanceFromBest(streamsTemp, streamsBest, Base256, sizeIdxRequest);
-
-      /* Overwrite best streams with new results */
-      for(state = 0; state < SchemeStateCount; state++)
-      {
-         if(streamsBest[state].status != DmtxStatusComplete)
-            StreamCopy(&(streamsBest[state]), &(streamsTemp[state]));
-      }
-
-      dmtxByteListClear(&ctxTemp);
-      PushCTXValues(&ctxTemp, input->b[inputNext], DmtxSchemeC40, &passFail, fnc1);
-      c40ValueCount += ((passFail == DmtxPass) ? ctxTemp.length : 1);
-
-      dmtxByteListClear(&ctxTemp);
-      PushCTXValues(&ctxTemp, input->b[inputNext], DmtxSchemeText, &passFail, fnc1);
-      textValueCount += ((passFail == DmtxPass) ? ctxTemp.length : 1);
-
-      dmtxByteListClear(&ctxTemp);
-      PushCTXValues(&ctxTemp, input->b[inputNext], DmtxSchemeX12, &passFail, fnc1);
-      x12ValueCount += ((passFail == DmtxPass) ? ctxTemp.length : 1);
-
-#if DUMPSTREAMS
-      DumpStreams(streamsBest);
-#endif
    }
 
    /* Choose the overall winner */

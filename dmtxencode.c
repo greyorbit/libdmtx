@@ -34,7 +34,7 @@ dmtxEncodeCreate(void)
    enc->sizeIdxRequest = DmtxSymbolSquareAuto;
    enc->marginSize = 10;
    enc->moduleSize = 5;
-   enc->pixelPacking = DmtxPack24bppRGB;
+   enc->pixelPacking = DmtxPack8bppK;
    enc->imageFlip = DmtxFlipNone;
    enc->rowPadBytes = 0;
 

@@ -1,0 +1,58 @@
+# depslib dependency file v1.0
+1630057639 source:d:\sigma\project\lib\libdmtx\test\dmtx_to_lcd\dmtx_to_lcd.c
+	<stdlib.h>
+	<stdio.h>
+	<sys/types.h>
+	<ctype.h>
+	<limits.h>
+	<float.h>
+	<string.h>
+	<errno.h>
+	<assert.h>
+	<math.h>
+	"../../dmtx.h"
+	"../../dmtxstatic.h"
+	"config.h"
+	"../../dmtxencode.c"
+	"../../dmtxencodestream.c"
+	"../../dmtxencodescheme.c"
+	"../../dmtxencodeoptimize.c"
+	"../../dmtxencodeascii.c"
+	"../../dmtxmessage.c"
+	"../../dmtxsymbol.c"
+	"../../dmtxplacemod.c"
+	"../../dmtxreedsol.c"
+	"../../dmtximage.c"
+	"../../dmtxbytelist.c"
+	"../../dmtxmatrix3.c"
+
+1629870069 d:\sigma\project\lib\libdmtx\dmtx.h
+	<time.h>
+	<sys/time.h>
+
+1629870069 d:\sigma\project\lib\libdmtx\dmtxstatic.h
+
+1629875202 d:\sigma\project\lib\libdmtx\dmtxencode.c
+
+1629870069 d:\sigma\project\lib\libdmtx\dmtxencodestream.c
+
+1629875368 d:\sigma\project\lib\libdmtx\dmtxencodescheme.c
+
+1629875349 d:\sigma\project\lib\libdmtx\dmtxencodeoptimize.c
+
+1629870069 d:\sigma\project\lib\libdmtx\dmtxencodeascii.c
+
+1629870069 d:\sigma\project\lib\libdmtx\dmtxmessage.c
+
+1629870069 d:\sigma\project\lib\libdmtx\dmtxsymbol.c
+
+1629870069 d:\sigma\project\lib\libdmtx\dmtxplacemod.c
+
+1629870069 d:\sigma\project\lib\libdmtx\dmtxreedsol.c
+
+1629870069 d:\sigma\project\lib\libdmtx\dmtximage.c
+
+1629875167 d:\sigma\project\lib\libdmtx\dmtxbytelist.c
+
+1629875395 d:\sigma\project\lib\libdmtx\dmtxmatrix3.c
+

@@ -130,13 +130,5 @@ dmtxByteListPop(DmtxByteList *list, DmtxPassFail *passFail)
 extern void
 dmtxByteListPrint(DmtxByteList *list, char *prefix)
 {
-   int i;
-
-   if(prefix != NULL)
-      fprintf(stdout, "%s", prefix);
-
-   for(i = 0; i < list->length; i++)
-      fprintf(stdout, " %d", list->b[i]);
-
-   fputc('\n', stdout);
+   
 }

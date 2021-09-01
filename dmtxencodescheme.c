@@ -120,43 +120,17 @@ EncodeSingleScheme(DmtxByteList *input, DmtxByteList *output, int sizeIdxRequest
 static void
 EncodeNextChunk(DmtxEncodeStream *stream, int scheme, int option, int sizeIdxRequest)
 {
-   /* Special case: Prevent X12 from entering state with no way to unlatch */
-   if(stream->currentScheme != DmtxSchemeX12 && scheme == DmtxSchemeX12)
-   {
-      if(PartialX12ChunkRemains(stream))
-         scheme = DmtxSchemeAscii;
-   }
-
    /* Change to target scheme if necessary */
    if(stream->currentScheme != scheme)
    {
       EncodeChangeScheme(stream, scheme, DmtxUnlatchExplicit); CHKERR;
       CHKSCHEME(scheme);
    }
-
-   /* Special case: Edifact may be done before writing first word */
-   if(scheme == DmtxSchemeEdifact)
-      CompleteIfDoneEdifact(stream, sizeIdxRequest); CHKERR;
-
    switch(stream->currentScheme)
    {
       case DmtxSchemeAscii:
          EncodeNextChunkAscii(stream, option); CHKERR;
          CompleteIfDoneAscii(stream, sizeIdxRequest); CHKERR;
-         break;
-      case DmtxSchemeC40:
-      case DmtxSchemeText:
-      case DmtxSchemeX12:
-         EncodeNextChunkCTX(stream, sizeIdxRequest); CHKERR;
-         CompleteIfDoneCTX(stream, sizeIdxRequest); CHKERR;
-         break;
-      case DmtxSchemeEdifact:
-         EncodeNextChunkEdifact(stream); CHKERR;
-         CompleteIfDoneEdifact(stream, sizeIdxRequest); CHKERR;
-         break;
-      case DmtxSchemeBase256:
-         EncodeNextChunkBase256(stream); CHKERR;
-         CompleteIfDoneBase256(stream, sizeIdxRequest); CHKERR;
          break;
       default:
          StreamMarkFatal(stream, DmtxErrorUnknown);
@@ -178,20 +152,6 @@ EncodeChangeScheme(DmtxEncodeStream *stream, DmtxScheme targetScheme, int unlatc
    /* Every latch must go through ASCII */
    switch(stream->currentScheme)
    {
-      case DmtxSchemeC40:
-      case DmtxSchemeText:
-      case DmtxSchemeX12:
-         if(unlatchType == DmtxUnlatchExplicit)
-         {
-            AppendUnlatchCTX(stream); CHKERR;
-         }
-         break;
-      case DmtxSchemeEdifact:
-         if(unlatchType == DmtxUnlatchExplicit)
-         {
-            AppendValueEdifact(stream, DmtxValueEdifactUnlatch); CHKERR;
-         }
-         break;
       default:
          /* Nothing to do for ASCII or Base 256 */
          assert(stream->currentScheme == DmtxSchemeAscii ||
@@ -228,12 +188,6 @@ EncodeChangeScheme(DmtxEncodeStream *stream, DmtxScheme targetScheme, int unlatc
    /* Reset new chain length to zero */
    stream->outputChainWordCount = 0;
    stream->outputChainValueCount = 0;
-
-   /* Insert header byte if just latched to Base256 */
-   if(targetScheme == DmtxSchemeBase256)
-   {
-      UpdateBase256ChainHeader(stream, DmtxUndefined); CHKERR;
-   }
 }
 
 /**
